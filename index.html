@@ -1,1 +1,147 @@
-Hello World
+
+<style>
+	textarea { width: 100% }
+	.tabs { position: absolute; padding-left:.5em }
+		.tabs .newLine {margin-bottom:.5rem; margin-right: 100% }
+		.tabs [class^=pluck],.tabs .delay { width: .8rem; text-align:center; line-height: 1rem;display: inline-block;
+			 vertical-align: middle;/*如果不设置这条，用padding设置竖向位置就会失效……感觉是bug（但这不可能啊……）*/
+			 text-shadow:-.1em 0 white,.1em 0 white,-.05em 0 white,.05em 0 white,0 -.1em white,0 .1em white,0 -.05em white,0 .05em white}
+		.tabs [class^=pluckg] { padding: 3rem 0 0}
+		.tabs [class^=pluckc] { padding: 2rem 0 1rem }
+		.tabs [class^=plucke] { padding:1rem 0 2rem}
+		.tabs [class^=plucka] { padding: 0 0 3rem}
+		.tabs [class$="10"],.tabs [class$="11"],.tabs [class$="12"],.tabs [class$="13"],.tabs [class$="14"],.tabs [class$="15"],.tabs [class$="16"],.tabs [class$="17"],.tabs [class$="18"],.tabs [class$="19"],.tabs [class$="20"] { font-size: .6em }
+
+	.tabs { font-family: 'Trebuchet MS'; position: relative;margin:.5em auto;
+				 background:repeating-linear-gradient(
+					 white,white .9em,silver .9em,silver 1em,
+					 white 1em,white 1.9em,silver 1.9em,silver 2em,
+					 white 2em,white 2.9em,silver 2.9em,silver 3em,
+					 white 3em,white 3.9em,silver 3.9em,silver 4em,
+					 white 4em,white 4.5em) 0 -.45em}
+	h1::before { content: '🎼';color:red }
+	html { font-family: 'Microsoft YaHei UI' }
+	textarea { height: 5em }
+	ol,ul { margin: .5rem }
+</style>
+<h1>生成TABs</h1>
+<ul>
+	<li>G、C、E、A表示弦四到一，数字1~9表示品一到九</li>
+	<li>键盘第一行除E之外的“QWRTYUIOP”表示十及以上品</li>
+	<li>例如“G1”表示G弦一品，“C7”表示C弦七品</li>
+	<li>“EQ”E弦十品，“A0”A弦开音，等等</li>
+	<li>重复弦可以省略，例如“A0077997”七个音都是A弦</li>
+	<li>如果从最开始就不写，则默认A弦</li>
+	<li>空拍或者休止用空格</li></ul>
+<textarea>c2e3a02c0e0a2230e3a0c0e2a0 &#x00A;c2e23a0c2e2a002&#x00A;c0123e45a6789qwrtyuiop</textarea>
+<div class="tabs"></div><ul>
+	<li>研发初期，格式随时调整，随便试用下就好</li>
+	<li>没有保存功能，需要自己复制保存</li>
+	<li>和弦还没支持（下一版加入）</li>
+	<li>只支持尤克里里标准弦GCEA，未来会支持其它</li>
+	<li>可以用浏览器的缩放功能调整到满意大小</li>
+	<li>输入框也可以拖住右下角调整大小</li></ul>
+<span style="color:red;">&#9833;</span>
+<span style="color:orange;">&#9837;</span>
+<span style="color:yellow;">&#9834;</span>
+<span style="color:green;">&#9839;</span>
+<span style="color:aqua;">&#9835;</span>
+<span style="color:blue;">&#9838;</span>
+<span style="color:purple;">&#9836;</span>
+<script>
+	class Pluck{constructor(string,fret){this.string=string;this.fret=fret}}let pluck=(string,fret)=>new Pluck(string,fret)
+	class Delay{}let delay=()=>new Delay()
+	class NewLine{}let newLine=()=>new NewLine()
+	let parse=(a)=>{
+		let char={string:"string",fret:"fret",delay:"delay",newLine:"newLine",startChord:"startChord",endChord:"endChord"}
+		//TODO这里有个……逻辑架构问题……希望能把“折行”留在标记和表现层，不向下传到数据，怎么做后面要尝试一下
+		///识别、标识用户输入的文本
+		let parseText=(a)=>{
+			let parseChar=(a)=>{
+				let mismatch=Symbol()
+				let fret=["0","1","2","3","4","5","6","7","8","9"].includes(a)?parseInt(a):
+						a=="q"?10:a=="w"?11:a=="r"?12:a=="t"?13:a=="y"?14:a=="u"?15:a=="i"?16:a=="o"?17:a=="p"?18:mismatch
+				let string=["g","c","e","a"].includes(a)?a:mismatch
+				let startChord=a=="("?char.startChord:mismatch
+				let endChord=a==")"?char.endChord:mismatch
+				let delay=a==" "?char.delay:mismatch
+				let newLine=a=="\n"?char.newLine:mismatch
+				//TODO JS有没有delay execute？？？或者可能本身就是？？晚些再确认……
+				return fret!=mismatch?[char.fret,fret]:string!=mismatch?[char.string,string]:
+					startChord!=mismatch?[startChord]:endChord!=mismatch?[endChord]:
+					delay!=mismatch?[delay]:newLine!=mismatch?[newLine]:null
+			}
+			return a.split('').map(parseChar)
+		}
+		///用户输入的文本支持省略重复弦，在这里把省略的内容补完整
+		let reformatOmitContent=(a)=>{
+			let defaultString="a"
+			let parse=([string,r],[type,value])=>
+				type==char.string?[value,r]:
+				type==char.fret?[string,r.concat([[string,value]])]:
+				type==char.delay?[string,r.concat(delay)]:
+				[string,r.concat(delay)]
+			let parse2=([string,r],[type,value])=>{
+				switch(type){
+					case char.string:return[value,r]
+					case char.fret:return[string,r.concat(pluck(string,value))]
+					case char.delay:return[string,r.concat(delay())]
+					default:return[string,r.concat(newLine())]
+					}}
+			return a.reduce(parse3,k())[1]
+			}
+		let reformatOmitContent2=(a)=>{
+			let defaultString="a"
+			class ChordBuilder{constructor(){this.r=[]}
+				setString(a){this.string=a}
+				setFret(a){r.push[this.string,a]}
+				get(){r}}
+			class Keep{constructor(){this.string=defaultString;this.chord=null;this.result=[]}
+				startChord(){this.chord=new ChordBuilder()}endChord(){this.chord=null}get chording(){return k.chord!=null}}
+			let k=()=>new Keep()
+			let parse=(k,[type,value])=>{
+				let string=(a)=>{k.string=a;return k}
+				let fret=(a)=>{k.result=k.result.concat(pluck(k.string,a));return k}
+				let delay2=()=>{k.result=k.result.concat(delay());return k}
+				let newLine2=()=>{k.result=k.result.concat(newLine());return k}
+				switch(type){
+					case char.string:return string(value)
+					case char.fret:return fret(value)
+					case char.delay:return delay2()
+					case char.newLine:return newLine2()
+					case char.startChord:return k.startChord()
+					case char.endChord:return k.endChord()
+					}
+			}
+			return a.reduce(parse,k()).result
+		}
+		let b=a.toLowerCase()
+		let c=parseText(b)
+		let e=reformatOmitContent2(c)
+		return e
+	}
+	///用谱子数据生成HTML标记
+	let generateHTML=(a)=>{
+		let pluck=(a)=>`<div class="pluck${a.string}${a.fret}">${a.fret}</div>`
+		let delay=()=>`<div class="delay"></div>`
+		let other=()=>`<div class="newLine"></div>`
+		let generate=(a)=>a instanceof Pluck?pluck(a):a instanceof Delay?delay():other()
+		let b=parse(a)
+		let e=b.map(generate).join('')
+		return e
+	}
+	onload=()=>{
+		let i= document.getElementsByTagName('textarea')[0]
+		let o=document.getElementsByTagName("div")[0]
+		let output=(a)=>o.innerHTML=a
+		let draw=()=>output(generateHTML(i.value))
+		i.oninput=function(){draw()}
+		draw()
+		i.focus()
+		i.selectionStart=i.value.length
+		//e.onpropertychange = e.oninput; // for IE8
+		// e.onchange = e.oninput; // FF needs this in <select><option>...
+	}
+	//http://xahlee.info/comp/unicode_music_symbols.html
+	//https://w3c.github.io/smufl/gitbook/tables/beamed-groups-of-notes.html
+</script>
