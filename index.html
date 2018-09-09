@@ -1,13 +1,13 @@
 
 <style>
 	textarea { width: 100% }
-	.tabs { padding-left:.5em;font-family: 'Trebuchet MS'; margin:.5em auto;line-height: 1rem;
+	.tabs { padding-left:.5em;font-family: 'Trebuchet MS'; margin:.5em auto;line-height: 1rem;letter-spacing: -.1em;
 				 background:repeating-linear-gradient(
 					 silver,silver.1em,transparent.1em,transparent 1em
 					 ,silver 1em,silver 1.1em,transparent 1.1em,transparent 2em
 					 ,silver 2em,silver 2.1em,transparent 2.1em,transparent 3em
 					 ,silver 3em,silver 3.1em,transparent 3.1em,transparent 6em) 0 .45em
-				 ,repeating-linear-gradient(90deg,whitesmoke,whitesmoke 1px,transparent 1px,transparent.8em) .055em
+				 ,repeating-linear-gradient(90deg,whitesmoke,whitesmoke 1px,transparent 1px,transparent.8em) .11em
 	}
 		.tabs .newLine {margin-bottom:2em; margin-right: 100% }
 		.tabs .pluck,.tabs .delay { width: .8rem; text-align:center; display: inline-block;
@@ -19,7 +19,7 @@
 		.tabs .pluck.c { margin: 2rem 0 1rem }
 		.tabs .pluck.e { margin: 1rem 0 2rem }
 		.tabs .pluck.a { margin: 0 0 3rem }
-		.tabs .high{ font-size: .8em }
+		.tabs .high{ font-size: .9em }
 		.tabs .high::first-letter{ font-size: .8em;vertical-align:top }
 		.tabs .chord { display: inline-flex; justify-content: flex-end; flex-direction: column;vertical-align: middle; }
 			.tabs .chord .pluck { margin: 0 !important; }
@@ -41,19 +41,19 @@
 	<li>“EQ”E弦十品，“A0”A弦开音，等等</li>
 	<li>按拨弦顺序写</li>
 	<li>重复弦可以省略，例如“A0077997”七个音都是A弦</li>
-	<li>如果从最开始就不写，则默认A弦</li>
+	<li>开头不写则默认A弦</li>
 	<li>用括号表示和弦，尖括号表示泛音</li>
 	<li>空拍或者休止用空格，显示出来会按拍子对齐</li>
 </ul><ul>
 	<li>研发初期，格式随时调整，随便试用下就好</li>
 	<li>字母不区分大小写，以后功能多了可能会区分</li>
-	<li>设计目的是让记谱尽可能简单……看谱尽可能方便</li>
-	<li>没有保存功能，需要自己复制保存</li>
+	<li>让记谱尽可能简单……看谱尽可能方便</li>
+	<li>没有保存功能，可以复制出去保存（未来会有）</li>
 	<li>只支持尤克里里GCEA调弦，未来会支持其它</li>
 	<li>可以用浏览器的缩放功能调整到满意大小</li>
 	<li>输入框也可以拖住右下角调整大小</li>
-	<li>好的尤克里里谱绝不是机械式的记录或转换</li>
-	<li>本工具之时方便基本的记录而已</li></ul>
+	<li>好的尤克里里谱不是机械式的记录或转换</li>
+	<li>此工具只是方便基本记录</li></ul>
 <span style="color:red;">&#9833;</span>
 <span style="color:orange;">&#9837;</span>
 <span style="color:yellow;">&#9834;</span>
@@ -141,8 +141,8 @@
 			}
 			return a.reduce(plucks,k()).result
 		}
-		///用户输入的文本支持省略重复弦，在这里把省略的内容补完整
 		let parse=(a)=>{
+			///用户输入的文本支持省略重复弦，在这里把省略的内容补完整
 			let plucks=(a)=>{
 				let defaultString="a"
 				let p=([string,r],[type,value])=>
@@ -203,7 +203,7 @@
 		let pluck=(a)=>`<div class="pluck ${a.string}${a.fret>=10?' high':''}">${a.fret}</div>`
 		let overtone=(a)=>`<div class="overtone pluck ${a.string}${a.fret>=10?' high':''}">${a.fret}</div>`
 		let chord=(a)=>{
-			let o = ["g", "c", "e","a"].reverse()
+			let o=["g", "c", "e","a"].reverse()
 			a.sort((a,b)=>o.indexOf(a.string)-o.indexOf(b.string))
 			return`<div class="chord">`+a.map(pluck).join('')+`</div>`
 			}
