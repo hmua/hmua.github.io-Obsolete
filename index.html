@@ -1,46 +1,56 @@
 
 <style>
 	textarea { width: 100% }
-	.tabs { position: absolute; padding-left:.5em }
-		.tabs .newLine {margin-bottom:.5rem; margin-right: 100% }
-		.tabs [class^=pluck],.tabs .delay { width: .8rem; text-align:center; line-height: 1rem;display: inline-block;
-			 vertical-align: middle;/*如果不设置这条，用padding设置竖向位置就会失效……感觉是bug（但这不可能啊……）*/
-			 text-shadow:-.1em 0 white,.1em 0 white,-.05em 0 white,.05em 0 white,0 -.1em white,0 .1em white,0 -.05em white,0 .05em white}
-		.tabs [class^=pluckg] { padding: 3rem 0 0}
-		.tabs [class^=pluckc] { padding: 2rem 0 1rem }
-		.tabs [class^=plucke] { padding:1rem 0 2rem}
-		.tabs [class^=plucka] { padding: 0 0 3rem}
-		.tabs [class$="10"],.tabs [class$="11"],.tabs [class$="12"],.tabs [class$="13"],.tabs [class$="14"],.tabs [class$="15"],.tabs [class$="16"],.tabs [class$="17"],.tabs [class$="18"],.tabs [class$="19"],.tabs [class$="20"] { font-size: .6em }
-
-	.tabs { font-family: 'Trebuchet MS'; position: relative;margin:.5em auto;
+	.tabs { padding-left:.5em;font-family: 'Trebuchet MS'; margin:.5em auto;line-height: 1rem;
 				 background:repeating-linear-gradient(
 					 white,white .9em,silver .9em,silver 1em,
 					 white 1em,white 1.9em,silver 1.9em,silver 2em,
 					 white 2em,white 2.9em,silver 2.9em,silver 3em,
 					 white 3em,white 3.9em,silver 3.9em,silver 4em,
-					 white 4em,white 4.5em) 0 -.45em}
-	h1::before { content: '🎼';color:red }
+					 white 4em,white 6em) 0 -.45em }
+		.tabs .newLine {margin-bottom:2em; margin-right: 100% }
+		.tabs [class^=pluck],.tabs .delay { width: .8rem; text-align:center; display: inline-block;
+			 vertical-align: middle;/*如果不设置这条，用padding设置竖向位置就会失效……感觉是bug（但这不可能啊……）*/
+			 text-shadow:
+				 -.05em 0 white,.05em 0 white,0 -.05em white,0 .05em white
+				 ,-.1em 0 white,.1em 0 white,0 -.1em white,0 .1em white}
+		.tabs [class^=pluckg] { padding: 3rem 0 0}
+		.tabs [class^=pluckc] { padding: 2rem 0 1rem }
+		.tabs [class^=plucke] { padding:1rem 0 2rem}
+		.tabs [class^=plucka] { padding: 0 0 3rem}
+		.tabs [class$="-high"]{ font-size: .8em }
+		.tabs [class$="-high"]::first-letter{ font-size: .8em;vertical-align:top }
+		.tabs .chord { display: inline-flex; justify-content: flex-end; flex-direction: column;vertical-align: middle; }
+			.tabs .chord [class^=pluck] { padding: 0 !important; }
+
+	h1 { background: silver; padding: .5em; }
+	h1::before { content: '🎼'}
 	html { font-family: 'Microsoft YaHei UI' }
-	textarea { height: 5em }
+	textarea { height: 5em;font-size:.7em;font-family:Consolas}
 	ol,ul { margin: .5rem }
 </style>
-<h1>生成TABs</h1>
+<h1>文本记谱生成TABs</h1>
+<div class="tabs"></div>
+<textarea></textarea>
 <ul>
-	<li>G、C、E、A表示弦四到一，数字1~9表示品一到九</li>
+	<li>G、C、E、A表示弦四到一，数字1到9表示品</li>
 	<li>键盘第一行除E之外的“QWRTYUIOP”表示十及以上品</li>
 	<li>例如“G1”表示G弦一品，“C7”表示C弦七品</li>
 	<li>“EQ”E弦十品，“A0”A弦开音，等等</li>
 	<li>重复弦可以省略，例如“A0077997”七个音都是A弦</li>
 	<li>如果从最开始就不写，则默认A弦</li>
-	<li>空拍或者休止用空格</li></ul>
-<textarea>c2e3a02c0e0a2230e3a0c0e2a0 &#x00A;c2e23a0c2e2a002&#x00A;c0123e45a6789qwrtyuiop</textarea>
-<div class="tabs"></div><ul>
+	<li>和弦用括号括上</li>
+	<li>空拍或者休止用空格，显示出来会按拍子对齐</li>
+</ul><ul>
 	<li>研发初期，格式随时调整，随便试用下就好</li>
+	<li>字母不区分大小写，以后功能多了可能会区分</li>
+	<li>设计目的是让记谱尽可能简单……看谱尽可能方便</li>
 	<li>没有保存功能，需要自己复制保存</li>
-	<li>和弦还没支持（下一版加入）</li>
-	<li>只支持尤克里里标准弦GCEA，未来会支持其它</li>
+	<li>只支持尤克里里GCEA调弦，未来会支持其它</li>
 	<li>可以用浏览器的缩放功能调整到满意大小</li>
-	<li>输入框也可以拖住右下角调整大小</li></ul>
+	<li>输入框也可以拖住右下角调整大小</li>
+	<li>好的尤克里里谱绝不是机械式的记录或转换</li>
+	<li>本工具之时方便基本的记录而已</li></ul>
 <span style="color:red;">&#9833;</span>
 <span style="color:orange;">&#9837;</span>
 <span style="color:yellow;">&#9834;</span>
@@ -50,13 +60,14 @@
 <span style="color:purple;">&#9836;</span>
 <script>
 	class Pluck{constructor(string,fret){this.string=string;this.fret=fret}}let pluck=(string,fret)=>new Pluck(string,fret)
+	class Chord{constructor(seq){this.seq=seq}get(){seq}}let chord=(a)=>new Chord(a)
 	class Delay{}let delay=()=>new Delay()
 	class NewLine{}let newLine=()=>new NewLine()
 	let parse=(a)=>{
 		let char={string:"string",fret:"fret",delay:"delay",newLine:"newLine",startChord:"startChord",endChord:"endChord"}
 		//TODO这里有个……逻辑架构问题……希望能把“折行”留在标记和表现层，不向下传到数据，怎么做后面要尝试一下
 		///识别、标识用户输入的文本
-		let parseText=(a)=>{
+		let mapText=(a)=>{
 			let parseChar=(a)=>{
 				let mismatch=Symbol()
 				let fret=["0","1","2","3","4","5","6","7","8","9"].includes(a)?parseInt(a):
@@ -73,23 +84,6 @@
 			}
 			return a.split('').map(parseChar)
 		}
-		///用户输入的文本支持省略重复弦，在这里把省略的内容补完整
-		let reformatOmitContent=(a)=>{
-			let defaultString="a"
-			let parse=([string,r],[type,value])=>
-				type==char.string?[value,r]:
-				type==char.fret?[string,r.concat([[string,value]])]:
-				type==char.delay?[string,r.concat(delay)]:
-				[string,r.concat(delay)]
-			let parse2=([string,r],[type,value])=>{
-				switch(type){
-					case char.string:return[value,r]
-					case char.fret:return[string,r.concat(pluck(string,value))]
-					case char.delay:return[string,r.concat(delay())]
-					default:return[string,r.concat(newLine())]
-					}}
-			return a.reduce(parse3,k())[1]
-			}
 		let reformatOmitContent2=(a)=>{
 			let defaultString="a"
 			class ChordBuilder{constructor(){this.r=[]}
@@ -111,37 +105,118 @@
 					case char.newLine:return newLine2()
 					case char.startChord:return k.startChord()
 					case char.endChord:return k.endChord()
-					}
+				}
 			}
 			return a.reduce(parse,k()).result
 		}
+		let sort2=(a)=>{
+			let defaultString="a"
+			class ChordBuilder{constructor(){this.r=[]}
+				setString(a){this.string=a}
+				setFret(a){r.push[this.string,a]}
+				get(){r}}
+			class Keep{constructor(){this.string=defaultString;this.chord=null;this.result=[]}
+				startChord(){this.chord=new ChordBuilder()}endChord(){this.chord=null}get chording(){return k.chord!=null}}
+			let k=()=>new Keep()
+			let plucks=(k,[type,value])=>{
+				let string=(a)=>{k.string=a;return k}
+				let fret=(a)=>{k.result=k.result.concat(pluck(k.string,a));return k}
+				let delay2=()=>{k.result=k.result.concat(delay());return k}
+				let newLine2=()=>{k.result=k.result.concat(newLine());return k}
+				switch(type){
+					case char.string:return string(value)
+					case char.fret:return fret(value)
+					case char.delay:return delay2()
+					case char.newLine:return newLine2()
+					default:return[type,value]
+				}
+			}
+			return a.reduce(plucks,k()).result
+		}
+		///用户输入的文本支持省略重复弦，在这里把省略的内容补完整
+		let parse=(a)=>{
+			let plucks=(a)=>{
+				let defaultString="a"
+				let p=([string,r],[type,value])=>
+					type==char.string?[value,r]:
+					type==char.fret?[string,r.concat(pluck(string,value))]:
+					type==char.delay?[string,r.concat(delay())]:
+					type==char.newLine?[string,r.concat(newLine())]:
+					[string,r.concat(type)]
+				let parse2=([string,r],[type,value])=>{
+					switch(type){
+						case char.string:return[value,r]
+						case char.fret:return[string,r.concat(pluck(string,value))]
+						case char.delay:return[string,r.concat(delay())]
+						default:return[string,r.concat(newLine())]
+						}}
+				return a.reduce(p,[defaultString,[]])[1]
+			}
+			let chords=(a)=>{
+				let p=([chord,r],a)=>{
+					let startChord=()=>[[],r]
+					let endChord=()=>[null,r.concat([chord])]
+					let isPluck=()=>a instanceof Pluck
+					let inChord=()=>chord!=null
+					let addPluck=()=>[chord.concat(a),r]
+					let copy=()=>[chord,r.concat(a)]
+					return a==char.startChord?startChord():
+						inChord()&&isPluck()?addPluck():
+							a==char.endChord?endChord():
+								copy()
+					}
+				return a.reduce(p,[null,[]])[1]
+			}
+			let b=plucks(a)
+			let c=chords(b)
+			return c
+		}
 		let b=a.toLowerCase()
-		let c=parseText(b)
-		let e=reformatOmitContent2(c)
+		let c=mapText(b)
+		let e=parse(c)
 		return e
 	}
 	///用谱子数据生成HTML标记
 	let generateHTML=(a)=>{
-		let pluck=(a)=>`<div class="pluck${a.string}${a.fret}">${a.fret}</div>`
+		let pluck=(a)=>`<div class="pluck${a.string}${a.fret>=10?'-high':''}">${a.fret}</div>`
+		let chord=(a)=>{
+			let o = ["g", "c", "e","a"].reverse()
+			a.sort((a,b)=>o.indexOf(a.string)-o.indexOf(b.string))
+			return`<div class="chord">`+a.map(pluck).join('')+`</div>`
+			}
 		let delay=()=>`<div class="delay"></div>`
 		let other=()=>`<div class="newLine"></div>`
-		let generate=(a)=>a instanceof Pluck?pluck(a):a instanceof Delay?delay():other()
+		let generate=(a)=>
+			a instanceof Pluck?pluck(a):
+				a instanceof Array?chord(a):
+					a instanceof Delay?delay():other()
 		let b=parse(a)
 		let e=b.map(generate).join('')
 		return e
 	}
+	let test="c2e3a02c0e0a2230e3a0c0e2a0 &#x00A;c2e23a0c2e2a002 \ng1c2(g1c2e3a4)e3a4\nc0123e45a6789qwrtyuiop"
+	let halili="G0 A3 (G0C0E0A5) G0 A653 (G0C0E0A3) C0 G0 A3 (G0C4E5A5) CR A5 ER A7 C0 \nG0 A0 (G0C5E5A7) C5 A7 8 (G0C5E5A5)7G0E8 A0G0 (G0C5E4A7) E4 A7 5 (G0C4E5A5)   \nG0 A3 (G0C0E0A5) G0 A653 (G0C0E0A3) C0 G0 A3 (G0C4E5A5) CR A5 ER A7 C0 \nG0 A0 (G0C5E5A5)78 575 (G0C2E3A3) C2 A2 (G0C0E3A3)5  (G0C0E3A3) (G0C0E3A3)   (G0C0E3A3)(G0C0E3A3) CR"
 	onload=()=>{
 		let i= document.getElementsByTagName('textarea')[0]
 		let o=document.getElementsByTagName("div")[0]
 		let output=(a)=>o.innerHTML=a
 		let draw=()=>output(generateHTML(i.value))
 		i.oninput=function(){draw()}
+		i.value=halili
 		draw()
 		i.focus()
 		i.selectionStart=i.value.length
 		//e.onpropertychange = e.oninput; // for IE8
 		// e.onchange = e.oninput; // FF needs this in <select><option>...
 	}
+	//JavaScript试用体验（和F#比较）
+	//首先……代码结构真的非常一致啊……F#这个假装高帅富的骗纸！
+	//JS写起来非常顺手有木有？调试也方便到不行
+	//但JS有些不爽的地方
+		//首当其冲就是本地变量不能覆盖上层的，必须得名称不一样，不然的话……报错还是以外层变量优先来的……忘记了
+		//其次……函数是默认recursive，这点接上一点，本地函数调外层同名函数结果调的是自己，死循环了OMG！
+			//以上两条么……变量名的问题通过套一层来解决？？？？？？？？？似乎也不大完美……
+		//没有pipe，结果要么影响可读性，呃……但这也算是提供了更多细拆函数调用的动力……
 	//http://xahlee.info/comp/unicode_music_symbols.html
 	//https://w3c.github.io/smufl/gitbook/tables/beamed-groups-of-notes.html
 </script>
