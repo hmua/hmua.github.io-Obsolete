@@ -1,5 +1,5 @@
-title: hmua!!
-theme: minima
-titles_from_headings:
-  strip_title: true
-markdown: kramdown
+title:谢谢我喜欢你
+remote_theme: hmua/minima
+
+# Markdown之外，目录、首页、正文外格式
+show_excerpts: true#首页显示节选
