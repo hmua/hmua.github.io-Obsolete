@@ -4,3 +4,6 @@ remote_theme: hmua/Customized-Minima
 # Markdown之外，目录、首页、正文外格式
 show_excerpts: true
 #首页显示节选
+
+plugins:
+  - jekyll-feed
