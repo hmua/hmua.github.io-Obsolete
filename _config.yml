@@ -12,3 +12,4 @@ show_excerpts: true #首页显示节选
 collections: 
     星座: 
         output: true
+        permalink: /星座/:categories/:year/:i_month/:i_day/:title #网址，不在月日前加零，结尾什么都不加
