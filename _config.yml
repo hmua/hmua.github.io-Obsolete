@@ -2,7 +2,9 @@ title: 欸欸
 description: 谢谢我喜欢你
 author:
   name: 欸欸
+
 remote_theme: hmua/Customized-Minima
+permalink: /:categories/:year/:i_month/i_:day/:title
 
 # Markdown之外，目录、首页、正文外格式
 show_excerpts: true#首页显示节选
